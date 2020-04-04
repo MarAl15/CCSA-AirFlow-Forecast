@@ -1,8 +1,12 @@
 # Container image
 FROM python:3.6-slim-stretch
 
-# Working directory
-ADD . ./workflow
+# Just add the required files
+ARG VERSION # Build time
+ENV VERSION $VERSION # Runtime
+ADD API$VERSION.py requirements.txt ./workflow/
+
+# Set working directory
 WORKDIR ./workflow
 
 # Create folder for the saved models (pickle files) and install software packages
@@ -13,5 +17,4 @@ ENV PORT $PORT
 EXPOSE $PORT
 
 # Deploy the Restful API app
-ENV VERSION $VERSION
 CMD gunicorn -w 3 -b 0.0.0.0:$PORT API$VERSION:app
