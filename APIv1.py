@@ -43,7 +43,7 @@ def forecast(interval):
     forecast_hum  = model_hum.predict(n_periods=interval)
 
     # Create a list with the next 'interval' hours
-    initial_hour  = int(datetime.now().strftime('%H')) + 1
+    initial_hour  = (int(datetime.now().strftime('%H')) + 1)%24
     times = pd.date_range(str(initial_hour)+':00', periods=interval, freq='60min').strftime('%d/%m/%Y %H:%M')
 
 
