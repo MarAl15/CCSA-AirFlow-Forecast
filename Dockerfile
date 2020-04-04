@@ -2,8 +2,8 @@
 FROM python:3.6-slim-stretch
 
 # Just add the required files
-ARG VERSION # Build time
-ENV VERSION $VERSION # Runtime
+ARG VERSION
+ENV VERSION $VERSION
 ADD API$VERSION.py requirements.txt ./workflow/
 
 # Set working directory
