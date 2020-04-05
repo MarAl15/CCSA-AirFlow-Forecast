@@ -26,8 +26,8 @@ default_args = {
 # Instantiate the DAG
 dag = DAG( 'CCSA-Forecast',
             default_args=default_args,
-            description='CC - Practical assignment 2',
-            schedule_interval=None,#timedelta(days=1),
+            description='Practical assignment 2: Cloud-Native Deployment',
+            schedule_interval=None,
          )
 
 
@@ -81,7 +81,6 @@ GetDataB = BashOperator( task_id='GettDataTemperature',
 #                                                                     #
 #######################################################################
 ProcessData = PythonOperator( task_id='ProcessData',
-                              provide_context=True,
                               python_callable=mergeDataSets,
                               op_kwargs={
                                   'hum_file'   : '{{var.value.path_workflow}}/humidity.csv',
@@ -99,7 +98,6 @@ ProcessData = PythonOperator( task_id='ProcessData',
 #                                                                     #
 #######################################################################
 TrainARIMA = PythonOperator( task_id='TrainARIMA',
-                             provide_context=True,
                              python_callable=trainARIMA,
                              op_kwargs={
                                  'path' : str(Path.home())+'/.models/'
@@ -116,7 +114,6 @@ TrainARIMA = PythonOperator( task_id='TrainARIMA',
 #                                                                     #
 #######################################################################
 TrainRF = PythonOperator( task_id='TrainRF',
-                          provide_context=True,
                           python_callable=trainRandomForest,
                           op_kwargs={
                               'path' : str(Path.home())+'/.models/'
@@ -145,16 +142,16 @@ CloneRepo = BashOperator( task_id='CloneRepo',
 #                                                                     #
 #######################################################################
 RunUnitTestsV1 = BashOperator( task_id='RunUnitTestsV1',
-                          depends_on_past=False,
-                          bash_command= 'python3 {{var.value.path_workflow}}/services/test.py v1',
-                          dag=dag
-                        )
+                               depends_on_past=False,
+                               bash_command= 'python3 {{var.value.path_workflow}}/services/test.py v1',
+                               dag=dag
+                             )
 
 RunUnitTestsV2 = BashOperator( task_id='RunUnitTestsV2',
-                          depends_on_past=False,
-                          bash_command= 'python3 {{var.value.path_workflow}}/services/test.py v2',
-                          dag=dag
-                        )
+                               depends_on_past=False,
+                               bash_command= 'python3 {{var.value.path_workflow}}/services/test.py v2',
+                               dag=dag
+                             )
 
 #######################################################################
 #                                                                     #

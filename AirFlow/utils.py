@@ -29,7 +29,7 @@ def selectCSVcolumns(csvfile, column_name):
     return data.rename(columns={'datetime':'DATE', 'San Francisco': column_name})
 
 
-def mergeDataSets(hum_file, temp_file, **kwargs):
+def mergeDataSets(hum_file, temp_file):
     """
         Merges datasets with a common datetime column and
       stores the new dataset in MongoDB.
@@ -60,7 +60,7 @@ def mergeDataSets(hum_file, temp_file, **kwargs):
 #   3) Stores the ARIMA models in pickle files.                       #
 #                                                                     #
 #######################################################################
-def trainARIMA(path, **kwargs):
+def trainARIMA(path):
     """
         Creates ARIMA models (Humidity - Temperature).
     """
@@ -119,7 +119,7 @@ def trainARIMA(path, **kwargs):
 #   3) Stores the Random Forest models with pickle.                   #
 #                                                                     #
 #######################################################################
-def trainRandomForest(path, **kwargs):
+def trainRandomForest(path):
     """
         Creates Random Forest models (Humidity - Temperature).
     """
