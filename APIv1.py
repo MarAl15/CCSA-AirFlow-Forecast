@@ -12,7 +12,17 @@ from datetime import datetime
 from flask import Flask, Response
 app = Flask(__name__)
 
+# Get ARIMA models from the pickle files
+path = str(Path.home())+'/.models/'
+file_hum = open(path+'arima_humidity.p', 'rb')
+model_hum  = pickle.load(file_hum)
+file_hum.close()
 
+file_temp = open(path+'arima_temperature.p', 'rb')
+model_temp = pickle.load(file_temp)
+file_temp.close()
+
+# Define routes
 @app.route("/")
 def welcome():
     """
@@ -33,18 +43,13 @@ def forecast(interval):
         return Response("Lo siento, sólo trabajamos con predicciones para las próximas 24, 48 y 72 horas.",
                         status=400)
 
-    # Get ARIMA models from the pickle files
-    path = str(Path.home())+'/.models/'
-    model_hum  = pickle.load(open(path+'arima_humidity.p', 'rb'))
-    model_temp = pickle.load(open(path+'arima_temperature.p', 'rb'))
-
     # Predict temperature and humidity from ARIMA models
     forecast_temp = model_temp.predict(n_periods=interval)
     forecast_hum  = model_hum.predict(n_periods=interval)
 
     # Create a list with the next 'interval' hours
     initial_hour  = (int(datetime.now().strftime('%H')) + 1)%24
-    times = pd.date_range(str(initial_hour)+':00', periods=interval, freq='60min').strftime('%d/%m/%Y %H:%M')
+    timestamps = pd.date_range(str(initial_hour)+':00', periods=interval, freq='60min').strftime('%d/%m/%Y %H:%M')
 
 
     return  Response(json.dumps([{'hour': date,
@@ -52,7 +57,7 @@ def forecast(interval):
                                   'hum' : round(humidity,2)
                                  }
                                  for date, temperature, humidity
-                                     in zip(times, forecast_temp, forecast_hum)]),
+                                     in zip(timestamps, forecast_temp, forecast_hum)]),
                      status=200, mimetype='application/json')
 
 
