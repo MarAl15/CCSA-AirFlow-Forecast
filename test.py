@@ -1,7 +1,7 @@
 import unittest
 import sys
 import APIv1
-#import APIv2
+import APIv2
 
 class TestAPI(unittest.TestCase):
     VERSION = 'v1'
